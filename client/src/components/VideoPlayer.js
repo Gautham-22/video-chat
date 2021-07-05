@@ -4,8 +4,9 @@ import { SocketContext } from "../Context.js";
 
 
 const VideoPlayer = () => {
-    const {stream, myVideo, userVideo, name, call, callAccepted, callEnded} = useContext(SocketContext);
+    const {stream, myVideo, userVideo, name, call, callAccepted, callEnded} = useContext(SocketContext); // using specific states from SocketContext
 
+    // displaying our stream when available and setting user's stream during the call
     return (
         <div className="videoplayer">
             {(stream && (

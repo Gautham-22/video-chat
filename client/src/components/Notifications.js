@@ -4,8 +4,9 @@ import { SocketContext } from "../Context.js";
 
 
 const Notifications = () => {
-    const {call,answerCall,callAccepted} = useContext(SocketContext);
+    const {call,answerCall,callAccepted} = useContext(SocketContext);  // using specific states from SocketContext
 
+    // shows the caller info and enables answer button
     return (
         <>
         {call.isReceivingCall && !callAccepted && 
