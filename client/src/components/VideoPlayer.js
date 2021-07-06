@@ -10,13 +10,13 @@ const VideoPlayer = () => {
     return (
         <div className="videoplayer">
             {(stream && (
-                <div>
+                <div className="video-container">
                     <h1>{name}</h1>
                     <video ref={myVideo} autoPlay muted />
                 </div>
             ))}
             {(callAccepted && !callEnded && (
-                <div>
+                <div className="video-container">
                     <h1>{call.name}</h1>
                     <video ref={userVideo} autoPlay />
                 </div>

@@ -13,15 +13,18 @@ const Sidebar = () => {
     // displays hangup button during call and make call button before/after the call 
     return (
         <div className="sidebar">
-            <input type="text" value={name} placeholder="Your name" onChange={(e) => {setName(e.target.value)}} />
-            <button onClick={() => {navigator.clipboard.writeText(me)}}>Copy your id</button>
-
-            <input type="text" value={idToCall} placeholder="Id to call" onChange={(e) => {setIdToCall(e.target.value)}} />
-            {(
-                (callAccepted && !callEnded) 
-                ? <button onClick={() => {leaveCall()}}>Hangup call</button>
-                : <button onClick={() => {callUser(idToCall)}}>Make a call</button>
-            )}
+            <div className="sidebar__container">
+                <input type="text" value={name} placeholder="Your name" onChange={(e) => {setName(e.target.value)}} />
+                <button onClick={() => {navigator.clipboard.writeText(me)}}>Copy your id</button>
+            </div>
+            <div className="sidebar__container">
+                <input type="text" value={idToCall} placeholder="Id to call" onChange={(e) => {setIdToCall(e.target.value)}} />
+                {(
+                    (callAccepted && !callEnded) 
+                    ? <button onClick={() => {leaveCall()}} id="end__btn">Hangup <i className="fas fa-phone-slash" id="icon"></i></button>
+                    : <button onClick={() => {if(idToCall){callUser(idToCall)} } } id="call__btn">Call <i className="fas fa-phone" id="icon"></i></button>
+                )}
+            </div>
         </div>
     );
 };

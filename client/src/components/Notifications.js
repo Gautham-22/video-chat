@@ -10,9 +10,9 @@ const Notifications = () => {
     return (
         <>
         {call.isReceivingCall && !callAccepted && 
-            (<div className="Notifications">
+            (<div className="notifications">
                 <h2>{call.name} is calling...</h2>
-                <button onClick={answerCall}>Answer</button>
+                <button onClick={answerCall} id="answer__btn">Answer <i className="fas fa-phone" id="icon"></i></button>
             </div>)
         }
         </>
