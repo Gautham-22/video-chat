@@ -2,7 +2,8 @@ import React, {createContext, useEffect, useState, useRef} from "react";
 
 const Peer = require("simple-peer");
 const {io} = require("socket.io-client");
-const socket = io("http://localhost:5000");  // connects client socket to the server's socket.io listening - triggers 'connection' event
+const socket = io("https://video-chatter-app.herokuapp.com/");  // connects client socket to the server's socket.io listening - triggers 'connection' event
+// const socket = io("http://localhost:5000");
 
 export const SocketContext = createContext();
 
@@ -10,6 +11,7 @@ export const ContextProvider = ({children}) => {
 
     const [me, setMe] = useState("");
     const [name, setName] = useState("");
+    const [userId, setUserId] = useState("");
     const [stream, setStream] = useState("");
     const [call,setCall] = useState({});
     const [callAccepted,setCallAccepted] = useState();
@@ -41,6 +43,8 @@ export const ContextProvider = ({children}) => {
     const answerCall = () => {
         setCallAccepted(true);   // removes notification and enables hangup button
 
+        setUserId(call.from);  // stores id of the user who is in call
+
         const peer = new Peer({initiator:false, trickle:false, stream});  // creates peer connection with user stream
 
         peer.on("signal",(data) => {   // makes the caller to access user stream, name 
@@ -69,20 +73,29 @@ export const ContextProvider = ({children}) => {
 
         socket.on("callAccepted",({signal,name}) => {
             setCallAccepted(true);  // removes call button enables hangup button
-            setCall({name});        // for displaying the name which corresponds to the id we have called 
+            setCall({name});        // for displaying the name which corresponds to the id we have called
+            setUserId(id);          // stores the id of user whom we called 
             peer.signal(signal);    // emits stream event on our peer with user stream
         });
 
         connectionRef.current = peer;  // storing the peer for the future
     }
 
-    const leaveCall = () => {
+    const leaveCall = ({othersInCall}) => {
         setCallEnded(true); // removes hangup call button and removes user stream
 
         connectionRef.current.destroy(); // destroying the stored peer connection
 
+        if(othersInCall) {                      // if other user is still in call
+            socket.emit("leaveCall",{userId});  // for ending call on other user's side
+        }   
+
         window.location.reload(); // for initializing the state variables to default -- equivalent to opening app for 1st tym 
     }
+
+    socket.on("leaveCall",() => {
+        leaveCall({othersInCall : false});  // indicating that one user already left
+    })
 
     return (
         <SocketContext.Provider value={{

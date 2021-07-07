@@ -41,6 +41,7 @@ header {
 
 video {
     width: min(100%,400px);
+    max-height: 350px;
 }
 
 .sidebar {

@@ -5,9 +5,11 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, () => {
-    console.log(`Server started running on ${PORT}`);
-});
+app.get("/",(req,res) => {
+    res.send("Server started running...");
+})
+
+const server = app.listen(PORT);
 
 const io = require("socket.io")(server, {  // making socket.io to connect with our server
     cors : {
@@ -15,6 +17,8 @@ const io = require("socket.io")(server, {  // making socket.io to connect with o
         methods : ["GET","POST"]
     }
 })
+
+app.use(cors());
 
 io.on("connection",(socket) => {   // io listening on connection event will get access to the socket that connects
     //console.log("Socket connection made");
@@ -28,5 +32,9 @@ io.on("connection",(socket) => {   // io listening on connection event will get 
 
     socket.on("answerUser",({signal,to,calledUsername}) => {         // for answering calls
         io.to(to).emit("callAccepted",{signal,name:calledUsername}); // making the caller to access receiver name and stream 
+    })
+
+    socket.on("leaveCall",({userId}) => {   // ending call on other side
+        io.to(userId).emit("leaveCall");
     })
 })
